@@ -1,0 +1,33 @@
+Input: cities, distance_matrix, pop_size, mutation_rate, max_gen
+Output: best_route, best_distance
+
+Initialize population = random routes (pop_size × num_cities)
+Compute fitness = 1 / total_distance(route) for each route
+best_route = best individual with min distance
+
+for gen = 1 to max_gen:
+
+    # Selection (choose top 50%)
+    sort population by distance
+    parents = top 50% of population
+
+    new_population = empty
+
+    while size(new_population) < pop_size:
+        select parent1, parent2 randomly from parents
+
+        # Crossover (Order Crossover - OX)
+        child = OX(parent1, parent2)
+
+        # Mutation (swap two cities with probability = mutation_rate)
+        if rand() < mutation_rate:
+            swap two random positions in child
+
+        add child to new_population
+
+    population = new_population
+
+    evaluate fitness for all routes
+    update best_route if new best found
+
+return best_route, total_distance(best_route)
