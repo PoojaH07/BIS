@@ -1,33 +1,42 @@
-Input: cities, distance_matrix, pop_size, mutation_rate, max_gen
-Output: best_route, best_distance
+Begin GEA_TSP
 
-Initialize population = random routes (pop_size × num_cities)
-Compute fitness = 1 / total_distance(route) for each route
-best_route = best individual with min distance
+1. INPUT:
+      - List of cities
+      - Distance matrix between every pair of cities
 
-for gen = 1 to max_gen:
+2. SET parameters:
+      POP_SIZE
+      MUTATION_RATE
+      GENERATIONS
 
-    # Selection (choose top 50%)
-    sort population by distance
-    parents = top 50% of population
+3. CREATE initial population:
+      For i = 1 to POP_SIZE
+            route = random permutation of cities
+            add route to population
 
-    new_population = empty
+4. DEFINE fitness function:
+      fitness(route) = 1 / total_distance(route)
 
-    while size(new_population) < pop_size:
-        select parent1, parent2 randomly from parents
+5. For generation = 1 to GENERATIONS:
 
-        # Crossover (Order Crossover - OX)
-        child = OX(parent1, parent2)
+         a. Evaluate population fitness
+             Sort population by total_distance ascending
 
-        # Mutation (swap two cities with probability = mutation_rate)
-        if rand() < mutation_rate:
-            swap two random positions in child
+         b. Selection:
+             selected_parents = best 50% of population
 
-        add child to new_population
+         c. Crossover + Mutation:
+             new_population = empty
+             While size(new_population) < POP_SIZE
+                   parent1, parent2 = randomly select two from selected_parents
+                   child = Order_Crossover(parent1, parent2)
+                   child = Mutate(child, MUTATION_RATE)
+                   add child to new_population
 
-    population = new_population
+         d. Replace population = new_population
 
-    evaluate fitness for all routes
-    update best_route if new best found
+         e. Track best_route so far based on minimum distance
 
-return best_route, total_distance(best_route)
+6. OUTPUT best_route and best_distance
+
+End GEA_TSP
