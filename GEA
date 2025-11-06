@@ -1,38 +1,48 @@
-Input: f(x), pop_size, mutation_rate, crossover_rate, max_gen
+Function used:
+    fitness(x) = x * sin(10 * π * x) + 1.5
+
+Parameters Taken:
+    POP_SIZE        = 50
+    MUTATION_RATE   = 0.1
+    CROSSOVER_RATE  = 0.9
+    GENERATIONS     = 100
+    search_range    = [0 , 1]
+
+Input: fitness(x), POP_SIZE, MUTATION_RATE, CROSSOVER_RATE, GENERATIONS, search_range
 Output: best_x, best_fitness
 
-Initialize population = random real values between [0,1]  (size = pop_size)
-Compute fitness = f(x) for each individual
+Initialize population = 50 random values between [0,1]
+Compute fitness for each x using fitness(x)
 best_x = individual with highest fitness
 
-for gen = 1 to max_gen:
+for gen = 1 to 100:
 
-    # Selection (Tournament)
-    parents = select individuals by tournament method
+    # Selection (Tournament selection)
+    choose parents based on higher fitness scores
 
     new_population = empty
 
-    while size(new_population) < pop_size:
-        
-        select parent1 and parent2 from parents
+    while size(new_population) < 50:
 
-        # Crossover (linear blend)
-        if rand() < crossover_rate:
-            alpha = random(0,1)
-            child = alpha * parent1 + (1 - alpha) * parent2
+        pick parent1 and parent2 from parents
+
+        # Crossover
+        if rand() < 0.9:
+            α = random(0,1)
+            child = α*parent1 + (1-α)*parent2
         else:
             child = parent1
 
         # Mutation
-        if rand() < mutation_rate:
+        if rand() < 0.1:
             child = child + random(-0.1 , +0.1)
-            clamp child between [0 , 1]
 
-        add child to new_population
+        clamp child into [0,1]
+        add child into new_population
 
     population = new_population
 
     evaluate fitness for all individuals
     update best_x if better solution found
 
-return best_x , f(best_x)
+return best_x , fitness(best_x)
