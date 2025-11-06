@@ -5,9 +5,9 @@ Begin GEA_TSP
       - Distance matrix between every pair of cities
 
 2. SET parameters:
-      POP_SIZE
-      MUTATION_RATE
-      GENERATIONS
+      POP_SIZE = 20
+      MUTATION_RATE = 0.1
+      GENERATIONS = 200
 
 3. CREATE initial population:
       For i = 1 to POP_SIZE
