@@ -1,0 +1,48 @@
+FUNCTION fitness(x):
+    RETURN -x^2 + 5
+
+
+SET num_particles = 10
+SET max_iterations = 20
+SET w = 0.5
+SET c1 = 1.5
+SET c2 = 1.5
+
+FOR i = 1 TO num_particles:
+    particle[i] = RANDOM(-10, 10)
+    velocity[i] = 0
+    pbest[i] = particle[i]
+    pbest_value[i] = fitness(particle[i])
+END FOR
+
+gbest = pbest[argmax(pbest_value)]
+
+FOR iter = 1 TO max_iterations:
+    FOR i = 1 TO num_particles:
+        r1 = RANDOM(0, 1)
+        r2 = RANDOM(0, 1)
+        
+        velocity[i] = w * velocity[i] + c1 * r1 * (pbest[i] - particle[i]) \
+                      + c2 * r2 * (gbest - particle[i])
+        
+        particle[i] = particle[i] + velocity[i]
+        
+        current_value = fitness(particle[i])
+        
+        IF current_value > pbest_value[i]:
+            pbest[i] = particle[i]
+            pbest_value[i] = current_value
+        END IF
+    END FOR
+    
+    gbest = pbest[argmax(pbest_value)]
+    PRINT "Iteration:", iter, "gbest:", gbest, "f(gbest):", fitness(gbest)
+    
+    IF iter == max_iterations:
+        BREAK
+    END IF
+END FOR
+
+PRINT "Final Solution:"
+PRINT "Best Position:", gbest
+PRINT "Best Fitness:", fitness(gbest)
