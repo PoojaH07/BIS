@@ -22,7 +22,7 @@ FOR iter = 1 TO max_iterations:
         r1 = RANDOM(0, 1)
         r2 = RANDOM(0, 1)
         
-        velocity[i] = w * velocity[i] + c1 * r1 * (pbest[i] - particle[i]) \
+        velocity[i] = w * velocity[i] + c1 * r1 * (pbest[i] - particle[i]) 
                       + c2 * r2 * (gbest - particle[i])
         
         particle[i] = particle[i] + velocity[i]
