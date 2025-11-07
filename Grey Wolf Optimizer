@@ -1,0 +1,64 @@
+BEGIN
+
+INPUT:
+    Objective function f
+    Search bounds (lb, ub)
+    Dimension dim
+    Number of wolves N
+    Maximum iterations max_iter
+
+OUTPUT:
+    Best position (alpha_pos)
+    Best fitness (alpha_score)
+
+1. Initialize:
+    FOR i = 1 TO N:
+        position[i] ← random_vector(lb, ub, dim)
+        fitness[i] ← f(position[i])
+    END FOR
+
+    alpha ← best wolf (lowest fitness)
+    beta  ← 2nd best wolf
+    delta ← 3rd best wolf
+
+2. Main Loop:
+    FOR t = 1 TO max_iter:
+        a ← 2 - (2 * t / max_iter)     // linearly decreases from 2 → 0
+
+        FOR each wolf i = 1 TO N:
+
+            FOR each leader ∈ {alpha, beta, delta}:
+                r1 ← random_vector(0, 1)
+                r2 ← random_vector(0, 1)
+                A ← 2 * a * r1 - a
+                C ← 2 * r2
+                D ← |C * leader.pos - position[i]|
+                X_leader ← leader.pos - A * D
+            END FOR
+
+            // Update wolf position using average of three leaders
+            new_pos ← (X_alpha + X_beta + X_delta) / 3
+
+            // Apply bounds
+            new_pos ← clamp(new_pos, lb, ub)
+
+            // Evaluate fitness
+            new_fitness ← f(new_pos)
+
+            // Update position
+            position[i] ← new_pos
+            fitness[i] ← new_fitness
+        END FOR
+
+        // Update alpha, beta, delta wolves
+        Sort all wolves by fitness
+        alpha ← best wolf
+        beta  ← second best
+        delta ← third best
+
+    END FOR
+
+3. Return:
+    RETURN alpha.position, alpha.fitness
+
+END
