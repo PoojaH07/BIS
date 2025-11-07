@@ -1,0 +1,94 @@
+FUNCTION GWO(obj_func, dim, lb, ub, num_wolves, max_iter)
+
+INPUT:
+    obj_func     → objective function to minimize
+    dim          → problem dimensionality
+    lb, ub       → lower & upper bounds (vectors or scalars)
+    num_wolves   → number of wolves in population
+    max_iter     → number of iterations
+
+OUTPUT:
+    alpha_pos, alpha_fit  → best position and fitness found
+
+BEGIN
+
+1. Initialize Wolves:
+    FOR i = 1 TO num_wolves:
+        X[i] ← random_vector_uniform(lb, ub, dim)
+        Fit[i] ← obj_func(X[i])
+    END FOR
+
+2. Identify Leaders:
+    Sort wolves by Fit (ascending)
+    alpha_pos ← X[best]
+    alpha_fit ← Fit[best]
+    beta_pos  ← X[second best]
+    beta_fit  ← Fit[second best]
+    delta_pos ← X[third best]
+    delta_fit ← Fit[third best]
+
+3. Main Loop (Optimization):
+    FOR t = 1 TO max_iter:
+
+        a ← 2.0 * (1 - (t - 1) / (max_iter - 1))   // decreases linearly from 2 → 0
+
+        FOR i = 1 TO num_wolves:
+            X_curr ← X[i]
+
+            // --- Influence of Alpha ---
+            r1 ← random_vector(0, 1, dim)
+            r2 ← random_vector(0, 1, dim)
+            A1 ← 2 * a * r1 - a
+            C1 ← 2 * r2
+            D_alpha ← |C1 * alpha_pos - X_curr|
+            X1 ← alpha_pos - A1 * D_alpha
+
+            // --- Influence of Beta ---
+            r1 ← random_vector(0, 1, dim)
+            r2 ← random_vector(0, 1, dim)
+            A2 ← 2 * a * r1 - a
+            C2 ← 2 * r2
+            D_beta ← |C2 * beta_pos - X_curr|
+            X2 ← beta_pos - A2 * D_beta
+
+            // --- Influence of Delta ---
+            r1 ← random_vector(0, 1, dim)
+            r2 ← random_vector(0, 1, dim)
+            A3 ← 2 * a * r1 - a
+            C3 ← 2 * r2
+            D_delta ← |C3 * delta_pos - X_curr|
+            X3 ← delta_pos - A3 * D_delta
+
+            // --- Combine Influences ---
+            X_new ← (X1 + X2 + X3) / 3
+
+            // --- Apply Bounds ---
+            FOR d = 1 TO dim:
+                IF X_new[d] < lb[d] THEN X_new[d] ← lb[d]
+                IF X_new[d] > ub[d] THEN X_new[d] ← ub[d]
+            END FOR
+
+            // --- Update Position and Fitness ---
+            X[i] ← X_new
+            Fit[i] ← obj_func(X_new)
+        END FOR
+
+        // --- Update Leaders ---
+        Sort wolves by Fit (ascending)
+        IF Fit[1] < alpha_fit THEN
+            alpha_pos ← X[1]
+            alpha_fit ← Fit[1]
+        END IF
+        beta_pos  ← X[2]
+        beta_fit  ← Fit[2]
+        delta_pos ← X[3]
+        delta_fit ← Fit[3]
+
+        // (Optional) Store alpha_fit for convergence tracking
+
+    END FOR
+
+4. Return Best Solution:
+    RETURN alpha_pos, alpha_fit
+
+END FUNCTION
