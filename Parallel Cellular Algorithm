@@ -1,0 +1,70 @@
+Algorithm: Parallel_Cellular_Algorithm
+
+BEGIN
+
+    // Step 1: Define the Problem
+    Define the objective function f(x) to be optimized
+    Example: f(x) = x^2 - 4x + 4
+
+    // Step 2: Initialize Parameters
+    num_cells ← 100
+    grid_size ← 10 × 10
+    neighborhood_structure ← 3 × 3
+    max_iterations ← 100
+    search_range ← [-10, 10]
+
+    // Step 3: Initialize Population
+    For each cell[i][j] in grid:
+        cell[i][j].value ← random value between -10 and 10
+        cell[i][j].fitness ← f(cell[i][j].value)
+    End For
+
+    // Step 4: Evaluate Initial Fitness
+    For each cell[i][j] in grid:
+        cell[i][j].fitness ← f(cell[i][j].value)
+    End For
+
+    best_cell ← cell with minimum fitness in grid
+
+    // Step 5: Iterative Update Process
+    For iteration ← 1 to max_iterations do:
+
+        // Step 5.1: Parallel update for all cells
+        For each cell[i][j] in grid (executed in parallel):
+
+            // Step 1: Identify neighbors
+            neighbors ← all surrounding cells within 3×3 neighborhood
+                         (apply wrapping for edge cells)
+
+            // Step 2: Find the neighbor with best fitness
+            best_neighbor ← neighbor with minimum fitness value
+
+            // Step 3: Update the cell's value
+            new_value ← average(value of all neighbors)
+            cell[i][j].value ← new_value
+
+            // Step 4: Recalculate fitness
+            cell[i][j].fitness ← f(new_value)
+
+        End For
+
+        // Step 5.2: Track global best cell
+        current_best ← cell with minimum fitness in grid
+
+        If current_best.fitness < best_cell.fitness then
+            best_cell ← current_best
+        End If
+
+        // Step 5.3: Check stopping criteria
+        If (no improvement in best_cell for several iterations)
+           OR (iteration == max_iterations) then
+            Exit loop
+        End If
+
+    End For
+
+    // Step 6: Output Best Solution
+    Print "Best Solution (x):", best_cell.value
+    Print "Best Fitness Value:", best_cell.fitness
+
+END
