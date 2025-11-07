@@ -1,0 +1,47 @@
+BEGIN
+
+1. Initialize Population (Nests):
+   SET n ← number of nests
+   FOR i = 1 TO n:
+       Generate random solution x[i]
+   END FOR
+
+2. Evaluate Fitness:
+   FOR i = 1 TO n:
+       f[i] ← fitness(x[i])
+   END FOR
+   Find best nest x_best with minimum f(x_best)
+
+3. Main Loop (for t = 1 to MaxGen):
+   FOR t = 1 TO MaxGen:
+
+       // Generate a new solution (cuckoo egg)
+       Select a random nest i
+       Generate new solution using Lévy flight:
+           x_new = x[i] + α * Levy(λ)
+       Compute fitness f_new = fitness(x_new)
+
+       // Random selection & replacement
+       Select a random nest j
+       IF f_new < f[j] THEN
+           x[j] ← x_new
+           f[j] ← f_new
+       END IF
+
+       // Abandon some nests and replace with new ones
+       FOR each nest i:
+           IF rand() < Pa THEN
+               x[i] ← random_solution()
+               f[i] ← fitness(x[i])
+           END IF
+       END FOR
+
+       // Update best solution
+       Find current best nest x_best
+   END FOR
+
+4. Output:
+   PRINT "Best solution:", x_best
+   PRINT "Best fitness:", f(x_best)
+
+END
