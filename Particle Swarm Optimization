@@ -46,3 +46,11 @@ END FOR
 PRINT "Final Solution:"
 PRINT "Best Position:", gbest
 PRINT "Best Fitness:", fitness(gbest)
+
+// Xi: Position of the particle or agent.
+// Vi: Velocity of the particle or agent.
+// A: Population of agents.
+// W: Inertia weight.
+// C1: cognitive constant.
+// R1, R2: random numbers.
+// C2: social constant.
