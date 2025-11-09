@@ -1,0 +1,64 @@
+Algorithm: Ant Colony Optimization (ACO)
+
+Input:
+    Problem instance represented as a graph or search space
+    Parameters:
+        m       ← number of ants
+        α (alpha) ← importance of pheromone
+        β (beta)  ← importance of heuristic information
+        ρ (rho)   ← pheromone evaporation rate
+        Q         ← pheromone deposit factor
+        max_iter  ← maximum number of iterations
+
+Output:
+    Best solution found
+
+Begin
+    // 1. Initialize
+    Initialize pheromone trails τ(i, j) to small positive value τ0
+    Initialize heuristic information η(i, j) based on problem definition
+    best_solution ← None
+    best_cost ← ∞
+
+    // 2. Main loop
+    For t = 1 to max_iter do
+        For each ant k = 1 to m do
+            Initialize ant k at a random starting state
+            tabu_list[k] ← empty
+            While ant k has not built a complete solution do
+                From current state i, determine feasible moves J
+                For each possible move j in J do
+                    Compute transition probability:
+                        P(i, j) = [τ(i, j)]^α * [η(i, j)]^β
+                                 ---------------------------------
+                                 Σ over all s in J ([τ(i, s)]^α * [η(i, s)]^β)
+                EndFor
+                Select next state j according to P(i, j)
+                Move ant k to state j
+                Add j to tabu_list[k]
+            EndWhile
+            Evaluate solution built by ant k
+            If cost(solution_k) < best_cost then
+                best_solution ← solution_k
+                best_cost ← cost(solution_k)
+            EndIf
+        EndFor
+
+        // 3. Update pheromones
+        For all edges (i, j) do
+            τ(i, j) ← (1 - ρ) * τ(i, j)           // evaporation
+        EndFor
+
+        For each ant k = 1 to m do
+            For each component (i, j) used by ant k do
+                τ(i, j) ← τ(i, j) + Δτ(i, j)^k
+            EndFor
+        EndFor
+
+        where Δτ(i, j)^k = Q / cost(solution_k) if (i, j) ∈ solution_k
+                          = 0 otherwise
+    EndFor
+
+    // 4. Return best result
+    Return best_solution, best_cost
+End
